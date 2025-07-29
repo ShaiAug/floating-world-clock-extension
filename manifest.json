@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Floating World Clock",
+  "version": "1.0",
+  "description": "Displays a draggable world clock on any webpage.",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["style.css"],
+      "js": ["content.js"]
+    }
+  ]
+}
