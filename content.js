@@ -56,4 +56,79 @@ if (!document.getElementById(clockWindowId)) {
                     <p>${loc.timeZone}</p>
                 </div>
                 <div class="time-display">
-                    <div id="day-night-icon
+                    <div id="day-night-icon-${index}" class="day-night-icon"></div>
+                    <p id="time-${index}" class="time-text">00:00:00</p>
+                </div>
+            `;
+            clocksContainer.appendChild(clockDiv);
+        });
+    }
+
+    function updateClocks() {
+        const now = new Date();
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' };
+
+        locations.forEach((loc, index) => {
+            const timeElem = document.getElementById(`time-${index}`);
+            const dayNightIconElem = document.getElementById(`day-night-icon-${index}`);
+
+            if (timeElem && dayNightIconElem) {
+                timeElem.textContent = now.toLocaleTimeString('en-GB', { ...timeOptions, timeZone: loc.timeZone });
+                const hour = parseInt(now.toLocaleTimeString('en-GB', { timeZone: loc.timeZone, hour: '2-digit', hourCycle: 'h23' }));
+                dayNightIconElem.innerHTML = (hour >= 6 && hour < 18) ? dayNightIcons.sun : dayNightIcons.moon;
+            }
+        });
+    }
+
+    initializeClocks();
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+    // --- Window Controls Logic ---
+    minimizeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent the drag event from firing
+        clockWindow.classList.add('minimized');
+    });
+
+    restoreTab.addEventListener('click', () => {
+        clockWindow.classList.remove('minimized');
+    });
+
+
+    // --- Dragging Logic ---
+    const clockHeader = document.getElementById('clock-header');
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    clockHeader.addEventListener('mousedown', (e) => {
+        // Only allow dragging if the window is not minimized
+        if (clockWindow.classList.contains('minimized')) return;
+
+        isDragging = true;
+        offsetX = e.clientX - clockWindow.getBoundingClientRect().left;
+        offsetY = e.clientY - clockWindow.getBoundingClientRect().top;
+        clockWindow.classList.add('dragging');
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+        const vw = document.documentElement.clientWidth;
+        const vh = document.documentElement.clientHeight;
+        const winW = clockWindow.offsetWidth;
+        const winH = clockWindow.offsetHeight;
+        newX = Math.max(0, Math.min(newX, vw - winW));
+        newY = Math.max(0, Math.min(newY, vh - winH));
+        clockWindow.style.left = `${newX}px`;
+        clockWindow.style.top = `${newY}px`;
+        clockWindow.style.right = 'auto';
+        clockWindow.style.bottom = 'auto';
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        clockWindow.classList.remove('dragging');
+    });
+}
