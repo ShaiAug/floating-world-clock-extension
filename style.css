@@ -8,6 +8,7 @@
     top: 32px !important;
     right: 32px !important;
     width: 320px !important;
+    height: auto !important;
     z-index: 999999 !important; /* Very high z-index to stay on top */
     background-color: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(4px) !important;
@@ -19,7 +20,8 @@
     font-family: 'Inter', sans-serif !important;
     user-select: none !important;
     -webkit-user-select: none !important;
-    transition: box-shadow 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out !important;
+    overflow: hidden;
 }
 
 /* Add a class for when the window is being dragged */
@@ -41,6 +43,17 @@
 #clock-window-extension #clock-header h2 {
     font-weight: 700;
     font-size: 0.875rem;
+}
+
+/* Window Controls (minimize button) */
+#clock-window-extension #window-controls {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+#clock-window-extension #window-controls:hover {
+    background-color: #e5e7eb;
 }
 
 /* Clocks container */
@@ -85,4 +98,34 @@
     background-color: #f3f4f6;
     padding: 4px 8px;
     border-radius: 0.375rem;
+}
+
+/* --- MINIMIZE STYLES --- */
+#clock-window-extension #restore-tab {
+    display: none; /* Hidden by default */
+}
+
+#clock-window-extension.minimized {
+    height: 40px !important;
+    width: 130px !important;
+    top: auto !important;
+    bottom: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    cursor: pointer !important;
+}
+
+#clock-window-extension.minimized #clock-header,
+#clock-window-extension.minimized #clocks-container {
+    display: none !important;
+}
+
+#clock-window-extension.minimized #restore-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    font-weight: 500;
 }
